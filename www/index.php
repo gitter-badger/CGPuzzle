@@ -38,13 +38,41 @@
 
 		<!--    TITRE     -->
 		<div class="page-header">
-		  <h1>CodinGame Puzzle Status</h1>
+		  <h1><a href="?" class="btn"><span class="glyphicon glyphicon-home"/></a> CodinGame Puzzle Status</h1>
 		</div>
+	
+		<?	
+		$joueurID=$_GET["pid"];
+
+		if (!$joueurID) {
+			?>
+			<form class="form-horizontal">
+			  <div class="form-group">
+				<label class="control-label col-sm-2" for="name">Player's name:</label>
+				<div class="col-sm-10">
+				  <input class="form-control" name="name" placeholder="Pseudo">
+				</div>
+			  </div>
+			</form>
+			<?
 			
+			$req=$_GET['name'];
+			if($req) {
+				$players=loadPlayer($req);
+				
+				foreach ($players as $player) {
+					$pseudo=$player->{'pseudo'};
+					$rank=$player->{'rank'};
+					$userId=$player->{'codingamer'}->{'userId'};
+					?><a href="?pid=<?= $userId ?>" class="btn btn-primary btn-lg"> <span class="badge">#<?= $rank ?></span> <?= $pseudo ?></a><?
+				}
+			}
+			
+		} else {
+		
+		?>	
 	    <!--   CHOIX DE LA DIFFICULTE   -->
 		
-		<h2>Choix du niveau :</h2>
-
 		<div id="levels" class="btn-toolbar" role="toolbar">
 		  <div class="btn-group" role="group">
 			<a id="easy"   type="button" class="btn btn-default">Easy</a>
@@ -53,12 +81,14 @@
 			<a id="expert" type="button" class="btn btn-default">Expert</a>
 		  </div>
 		  <div class="btn-group" role="group">
-			<a id="optim" type="button" class="btn btn-default">Optimisation</a>
-			<a id="codegolf"     type="button" class="btn btn-default">Code golf</a>
+			<a id="optim"    type="button" class="btn btn-default">Optimisation</a>
+			<a id="codegolf" type="button" class="btn btn-default">Code golf</a>
 		  </div>
+		  <!-- Moyen interressant, car un seul langage...
 		  <div class="btn-group" role="group">
 			<a id="machine-learning" type="button" class="btn btn-default">Machine learning</a>
 		  </div>
+		  -->
 		  <!-- PAS de multi : c'est le but des outils de Magus
 		  <div class="btn-group" role="group">
 			<a id="multi"  type="button" class="btn btn-default">Multiplayer</a>
@@ -71,88 +101,89 @@
  
 <?
 
-$LEVEL=$_GET["level"]; # Le niveau easy/hard/.../multi...
 
-$PAGE=$_GET["p"];  # La pagination des langages
-if (!$PAGE) {$PAGE=1;}
-$PAGENUM = 2;
+	$LEVEL=$_GET["level"]; # Le niveau easy/hard/.../multi...
 
-if ($LEVEL==="machine-learning") {
-		$PAGE=1;
-	} else {
+	if ($LEVEL) {
 
+		$PAGE=$_GET["p"];  # La pagination des langages
+		if (!$PAGE) {$PAGE=1;}
+		$PAGENUM = 2;
 
-		?>
-				<ul class="pagination align-right">
-				  <li id="1"<? if ($PAGE==="1" ) {?> class="active"<?}?>><a href="#">1</a></li>
-				  <li id="2"<? if ($PAGE==="2" ) {?> class="active"<?}?>><a href="#">2</a></li>
-				</ul>
-		<?php
-	}
+		if ($LEVEL==="machine-learning") {
+				$PAGE=1;
+			} else {
 
 
-# Outil demandé par Asmodeus (et moi)
-
-# Pour un puzzle donné, il faut faire la requete :
-# https://www.codingame.com/services/PuzzleRemoteService/findAvailableProgrammingLanguages
-# En POST et avec en parametre [39, 802230]
-# 39 est l'ID du puzzle et 802230 l'ID du joueur
-
-require_once "lib/cache.class.php";
-
-# Voici la reponse à findGamesPuzzleProgress qui n'est pas utilisable ici (car il faut être connecté)
-# mais qui contient les infos sur tous les puzzles
-$string = file_get_contents("const/findGamesPuzzleProgress.json");
-$PUZZLES= json_decode($string)->{"success"};
-
-if ($LEVEL) {
-
-	$joueurID=802230;
-
-
-	$cache = new Cache("player-joueurID");
-	$cache->setCachePath('cache/');
-	$cache->eraseExpired();
-
-	foreach ($PUZZLES as $puzzle) {	
-		if ($puzzle->{"level"}==$LEVEL) { # FILTRE : on affiche uniquement le niveau demandé
-			$ID=$puzzle->{"id"};
-			$TITLE=$puzzle->{"title"};
-			
-			# Chargement des résultats du joueur
-			$result = loadPuzzle($cache,$joueurID,$ID);
- 			
-			# SI PREMIERE LIGNE : On calcule les colonnes (langages)
-			if (! $column_count) {
-				?><table class="table table-striped table-header-rotated"><thead><tr><th></th><?
-				$cols=array();
-				$column_count=0;
-				foreach (pagination_slice($result,$PAGE,$PAGENUM) as $lang) {
-					array_push($cols, $lang->{"id"});
-					?><th class="rotate-45"><div><span><?= $lang->{"id"} ?></span></div></th><?
-					$column_count++;
-				}
-				?></tr></thead><tbody><?
+				?>
+						<ul class="pagination align-right">
+						  <li id="1"<? if ($PAGE=="1" ) {?> class="active"<?}?>><a href="#">1</a></li>
+						  <li id="2"<? if ($PAGE=="2" ) {?> class="active"<?}?>><a href="#">2</a></li>
+						</ul>
+				<?php
 			}
-			
-			# AFFICHAGE DE LA LIGNE : Nom du puzzle
-			?><tr><th class="row-header"><?= $TITLE ?></th><?
-			# Valeurs pour chaque colonne
-			for ($col=0;$col<$column_count;$col++) { #pagination_slice($result,$PAGE,$PAGENUM) as $line
-				$c=0;
-				while($c<count($result) && $result[$c]->{"id"}!=$cols[$col]) { $c++; }
-				if($c>=count($result)) {
-					?><td class="danger"></td><?
-				} else {
-					?><td><? if ($result[$c]->{"solved"}) { ?><span class="glyphicon glyphicon-ok green"/><? } else { ?>-<? } ?></td><?
-				}
-			}
-			
-			?></tr><?
-		} // if puzzle==LEVEL
-	} // foreach PUZZLES
 
-} // if LEVEL
+
+		# Outil demandé par Asmodeus (et moi)
+
+		# Pour un puzzle donné, il faut faire la requete :
+		# https://www.codingame.com/services/PuzzleRemoteService/findAvailableProgrammingLanguages
+		# En POST et avec en parametre [39, 802230]
+		# 39 est l'ID du puzzle et 802230 l'ID du joueur
+
+		require_once "lib/cache.class.php";
+
+		# Voici la reponse à findGamesPuzzleProgress qui n'est pas utilisable ici (car il faut être connecté)
+		# mais qui contient les infos sur tous les puzzles
+		$string = file_get_contents("const/findGamesPuzzleProgress.json");
+		$PUZZLES= json_decode($string)->{"success"};
+
+
+		$cache = new Cache("player-joueurID");
+		$cache->setCachePath('cache/');
+		$cache->eraseExpired();
+
+		foreach ($PUZZLES as $puzzle) {	
+			if ($puzzle->{"level"}==$LEVEL) { # FILTRE : on affiche uniquement le niveau demandé
+				$ID=$puzzle->{"id"};
+				$TITLE=$puzzle->{"title"};
+				
+				# Chargement des résultats du joueur
+				$result = loadPuzzle($cache,$joueurID,$ID);
+				
+				# SI PREMIERE LIGNE : On calcule les colonnes (langages)
+				if (! $column_count) {
+					?><table class="table table-striped table-header-rotated"><thead><tr><th></th><?
+					$cols=array();
+					$column_count=0;
+					foreach (pagination_slice($result,$PAGE,$PAGENUM) as $lang) {
+						array_push($cols, $lang->{"id"});
+						?><th class="rotate-45"><div><span><?= $lang->{"id"} ?></span></div></th><?
+						$column_count++;
+					}
+					?></tr></thead><tbody><?
+				}
+				
+				# AFFICHAGE DE LA LIGNE : Nom du puzzle
+				?><tr><th class="row-header"><?= $TITLE ?></th><?
+				# Valeurs pour chaque colonne
+				for ($col=0;$col<$column_count;$col++) { #pagination_slice($result,$PAGE,$PAGENUM) as $line
+					$c=0;
+					while($c<count($result) && $result[$c]->{"id"}!=$cols[$col]) { $c++; }
+					if($c>=count($result)) {
+						?><td class="danger"></td><?
+					} else {
+						?><td><? if ($result[$c]->{"solved"}) { ?><span class="glyphicon glyphicon-ok green"/><? } else { ?>-<? } ?></td><?
+					}
+				}
+				
+				?></tr><?
+			} // if puzzle==LEVEL
+		} // foreach PUZZLES
+
+	} // if LEVEL
+
+} // if PLAYER ID
 ?></tbody></table>
 	
 	</div>
@@ -229,7 +260,6 @@ if ($LEVEL) {
 				'http' => array(
 					'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
 					'method'  => 'POST',
-					# 'content' => http_build_query($data)
 					'content' => $data
 				)
 			);
@@ -241,5 +271,27 @@ if ($LEVEL) {
 			$cache->store($KEY,$dec,$EXPIRATION);
 		}
 		return $dec->{'success'};
+	}
+	
+	#
+	# CHARGE le joueur avec son pseudo : renvoie un tableau
+	#
+	function loadPlayer( $pseudo ) {
+		$API='https://www.codingame.com/services/LeaderboardsRemoteService/getGlobalLeaderboard';
+		$data = "[1,{\"keyword\":\"$pseudo\"},\"\",true,\"global\"]";
+
+		// use key 'http' even if you send the request to https://...
+		$options = array(
+			'http' => array(
+				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+				'method'  => 'POST',
+				'content' => $data
+			)
+		);
+		$context  = stream_context_create($options);
+		$result = file_get_contents($API, false, $context);
+		if ($result === FALSE) { ?> <h1>CG API Error</h1> <? }
+		$dec = json_decode($result);
+		return $dec->{'success'}->{'users'};
 	}
 	
