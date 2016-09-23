@@ -97,7 +97,6 @@
 		  <div class="btn-group" role="group">
 			<a id="community" type="button" class="btn btn-default">Community</a>
 		  </div>
-		</div>
  
 <?
 
@@ -116,7 +115,7 @@
 
 
 				?>
-						<ul class="pagination align-right">
+						<ul class="pagination pull-right">
 						  <li id="1"<? if ($PAGE=="1" ) {?> class="active"<?}?>><a href="#">1</a></li>
 						  <li id="2"<? if ($PAGE=="2" ) {?> class="active"<?}?>><a href="#">2</a></li>
 						</ul>
@@ -214,6 +213,10 @@
 		var level = event.target.id;
 		setLevel(level);
 		});
+		
+	if ($.query.get("level")) {
+		$('#levels #'+$.query.get("level")).addClass('active');
+	}
 
 	$('.pagination li a').on('click', function(event) {
 		event.preventDefault();
