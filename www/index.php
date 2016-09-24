@@ -138,7 +138,7 @@
 		$PUZZLES= json_decode($string)->{"success"};
 
 
-		$cache = new Cache("player-joueurID");
+		$cache = new Cache("player-$joueurID");
 		$cache->setCachePath('cache/');
 		$cache->eraseExpired();
 
@@ -250,7 +250,7 @@
 	#
 	function loadPuzzle( $cache, $joueurID, $ID ) {
 		$API='https://www.codingame.com/services/PuzzleRemoteService/findAvailableProgrammingLanguages';
-		$EXPIRATION = 24 * 60 * 60;
+		$EXPIRATION = 60 * 60;
 		$KEY="findGamesPuzzleProgress-$ID";
 		$dec = $cache->retrieve($KEY);
 
