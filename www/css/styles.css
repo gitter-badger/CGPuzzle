@@ -1,7 +1,91 @@
-.green {
-  color: #5fbf61;
+.legend-white {
+  border: solid 1px #000;
+}
+.white {
+  border: solid 1px #000;
 }
 
+.green {
+  padding:2px;
+  border-radius:2px;
+  background: #3F6B3F;
+  color: #FFF;
+}
+.legend-green {
+  background: #3F6B3F;
+  color: #FFF;
+}
+
+.red {
+  padding:2px;
+  border-radius:2px;
+  background: #E22F32;
+  color: #FFF;
+}
+.legend-red {
+  padding:2px;
+  background: #E22F32;
+  color: #FFF;
+}
+
+.orange {
+  padding:2px;
+  border-radius:2px;
+  padding:2px;
+  background: #FFA221;
+}
+.legend-orange {
+  padding:2px;
+  background: #FFA221;
+}
+
+.cyan {
+  padding:2px;
+  border-radius:2px;
+  padding:2px;
+  background: #afdeec;
+}
+.legend-cyan {
+  padding:2px;
+  background: #afdeec;
+}
+
+.purple {
+  padding:2px;
+  border-radius:2px;
+  background: #7810A8;
+  color: #FFF;
+}
+.legend-purple {
+  background: #7810A8;
+  color: #FFF;
+}
+
+.legend-player {
+	margin:1px;
+	padding:6px;
+	font-weight:bold;
+	border-radius:6px;
+}
+
+.player {
+	margin:8px;
+}
+.btn-glyphicon {
+    padding:8px;
+    background:#ffffff;
+    margin-right:4px;
+}
+.icon-btn {
+    padding: 1px 15px 3px 2px;
+    border-radius:50px;
+}
+#add-player {
+	margin-left:32px;
+}
+#search {
+	margin-top:32px;
+}
 .table-header-rotated th.row-header{
   width: auto;
 }
@@ -57,4 +141,43 @@
   width: 85px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
   text-align: left;
   // white-space: nowrap; /*whether to display in one line or not*/
+}
+
+
+.main-table {
+    position: relative;
+   /* top: -48px;        NO MARCHE PAS : EMPECHE LE CLICK SUR LES BOUTONS EASY/MEDIUM/... */
+}
+.btn-round {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.btn-round.btn-xs {
+    width: 24px;
+    height: 24px;
+}
+
+.remove-player {
+	opacity: 0.3;
+	position:relative;
+	top:-14px;
+	left:-15px;
+}
+.remove-player:hover {
+	opacity: 1.0;	
+}
+th.percent .glyphicon-remove-circle {
+	opacity: 0.1;
+}
+th.percent .glyphicon {
+	margin: 0 1px;
+}
+th.percent {
+	padding-right:0 !important;
+}
+#legends {
+	position: fixed;
+	z-index: 1000;
+	top: 200px;
 }

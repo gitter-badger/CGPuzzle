@@ -24,14 +24,8 @@
  
 
   <div class="row">
-	  <div class="col-md-12">
-	  </div>
-  </div>
-  <div class="row">
-	<div class="col-md-1">
-		<!--LEFT-->
-	</div>
-	<div class="col-md-8">
+	<div class="col-md-1"> </div>
+	<div class="col-md-10">
 	
 		<!--    TITRE     -->
 		<div class="page-header">
