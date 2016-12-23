@@ -1,7 +1,9 @@
 #!/bin/sh
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
+PORT=80
 
-docker rm -f cgpuzzle
-docker run --restart=always --name=cgpuzzle -d -p 9595:80 \
+./build.sh
+docker rm -f cgpuzzle-prod
+docker run --restart=always --name=cgpuzzle-prod -d -p $PORT:80 \
     cgpuzzle
