@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-PORT=80
+PORT=81
 
 ./build.sh
 docker rm -f cgpuzzle-prod

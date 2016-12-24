@@ -262,3 +262,4 @@ function displayPuzzleTable( $caches, $LEVEL, $joueursID, $COLORS ) {
 			} // if puzzle==LEVEL
 		} // foreach PUZZLES
 }
+	

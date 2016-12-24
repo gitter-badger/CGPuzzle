@@ -36,7 +36,7 @@
 		foreach ($players as $player) {
 			$pseudo=$player->{'pseudo'};
 			$userId=$player->{'codingamer'}->{'userId'};
-			file_put_contents( "users/user.$userId", "$pseudo" );
+			file_put_contents( "../users/user.$userId", "$pseudo" );
 		}
 		return $players;
 	}
@@ -47,7 +47,10 @@
 	function getPlayerPseudo ( $jid ) {
 	  global $PSEUDO;
 	  if ($PSEUDO[$jid]) { return $PSEUDO[$jid]; }
-	  $result = file_get_contents("users/user.$jid");
+	  // TODO : tester l'existence du fichier (si le fichier n'existe pas, alors l'ID 
+	  // du joueur a été mise à la main dans l'url sans passer par la recherche. Il faut
+	  // revenir à la page principale dans ce cas )
+	  $result = file_get_contents("../users/user.$jid");
 	  $PSEUDO[$jid]=$result;
 	  return $result;
 	}
@@ -89,7 +92,7 @@
 	
 	function createPlayerCacheFile( $playerId ) {
 		$cache = new Cache("player-$playerId");
-		$cache->setCachePath('cache/');
+		$cache->setCachePath('../cache/');
 		$cache->eraseExpired();
 		return $cache;
 	}
